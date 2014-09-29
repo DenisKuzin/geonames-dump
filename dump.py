@@ -130,7 +130,6 @@ class Dump(object):
         self.fill_timezones()
         self.fill_alternate_names()
 
-
     def fill_iso_languages(self):
         filename = u'alternateNames/iso-languagecodes.txt'
         if self.downloaded_dir:
@@ -285,7 +284,7 @@ class Dump(object):
         if self.downloaded_dir:
             filename = os.path.join(self.downloaded_dir, filename)
         with codecs.open(filename, encoding='utf8') as file:
-            for line in file.readlines()[:1000]:
+            for line in file.readlines():
                 line = line.split(u'\t')
                 line = map(str.strip, line)
                 alternate_name = AlternateName(*line)
@@ -465,13 +464,11 @@ class TestDump(unittest.TestCase):
         for _dict in (dump.iso_languages_3, dump.feature_classes, dump.feature_types_bg, dump.feature_types_en, dump.feature_types_nb, dump.feature_types_nn, dump.feature_types_no, dump.feature_types_ru, dump.feature_types_sv, dump.countries, dump.admin1_codes, dump.admin2_codes, dump.timezones):
             for element in _dict.values():
                 for field in element._fields:
-                    self.assertNotRegex(getattr(element, field), r'\s+$', msg=element)
-                    self.assertNotRegex(getattr(element, field), r'^\s+', msg=element)
+                    self.assertNotRegex(getattr(element, field), r'^\s+|\s+$', msg=element)
         for _list in dump.alternate_names.values():
             for element in _list:
                 for field in element._fields:
-                    self.assertNotRegex(getattr(element, field), r'\s+$', msg=element)
-                    self.assertNotRegex(getattr(element, field), r'^\s+', msg=element)
+                    self.assertNotRegex(getattr(element, field), r'^\s+|\s+$', msg=element)
 
 
 dump = Dump('downloaded')
